@@ -52,6 +52,13 @@ abstract class Kohana_OAuth {
 		// Get the response
 		$response = curl_exec($remote);
 
+		// @TODO: Find a better way to do this
+		if (curl_errno($remote) == 60)
+		{
+			curl_setopt($remote, CURLOPT_CAINFO, arr::get(Kohana::find_file('config', 'ca-bundle', 'crt'), 0, ''));
+			$response = curl_exec($remote);
+		}
+
 		// Get the response information
 		$code = curl_getinfo($remote, CURLINFO_HTTP_CODE);
 
